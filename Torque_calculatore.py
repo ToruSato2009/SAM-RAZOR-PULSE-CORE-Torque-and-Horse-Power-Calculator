@@ -82,7 +82,7 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-set_background("m3_back.jpg")
+set_background("SAM.png")
 
 # 🎨 Styled input
 def styled_input(label_text, key, **kwargs):
@@ -169,3 +169,4 @@ for gear, values in gearbox_output.items():
 st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
 st.markdown
+
