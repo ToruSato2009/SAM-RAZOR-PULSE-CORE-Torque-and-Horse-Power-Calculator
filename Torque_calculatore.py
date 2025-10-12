@@ -19,20 +19,29 @@ st.markdown("""
         transform: scale(1.05);
         box-shadow: 0 0 10px #ff4b4b;
     }
-    h1, h2 {
-        color: #ff4b4b;
+    h1, h2, h3 {
+        color: #ffffff;
         font-family: 'Agency FB', sans-serif;
         font-weight: bold;
     }
     .stApp {
         font-family: 'Agency FB', sans-serif;
         font-weight: bold;
-        color: #e0e0e0;
+        color: #ffffff;
     }
     label, .markdown-text-container {
         font-family: 'Agency FB', sans-serif;
         font-weight: bold;
-        color: #e0e0e0;
+        color: #ffffff;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #1c1c1c;
+        font-family: 'Agency FB', sans-serif;
+        color: #ffffff;
+    }
+    [data-testid="stSidebar"] * {
+        font-family: 'Agency FB', sans-serif;
+        color: #ffffff;
     }
     .overlay {
         position: fixed;
@@ -73,18 +82,18 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-set_background("SAM.png")
+set_background("m3_back.jpg")
 
 # 🎨 Styled input
 def styled_input(label_text, key, **kwargs):
-    st.markdown(f'<label style="color:#ff4b4b; font-family:Agency FB; font-weight:bold;">{label_text}</label>', unsafe_allow_html=True)
+    st.markdown(f'<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">{label_text}</label>', unsafe_allow_html=True)
     return st.number_input("", key=key, **kwargs)
 
 # 🎬 Title
 st.markdown('<h1>🔧 SAM RAZOR PULSE CORE Torque Simulator</h1>', unsafe_allow_html=True)
 
 # 🎮 Engine Type
-st.markdown('<label style="color:#ff4b4b; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
+st.markdown('<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
 engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)"], key="engine_type")
 
 # 🔍 Force Input
@@ -143,27 +152,20 @@ speed_kph = speed_mps * 3.6
 # 🎬 HUD Output
 st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">🧩 Engine Configuration</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🧩 Engine Configuration</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
 for gear, values in gearbox_output.items():
-    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-
-
-
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
+st.markdown
