@@ -73,7 +73,7 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-set_background("SAM_logo.png")
+set_background("SAM.png")
 
 # 🎨 Styled input
 def styled_input(label_text, key, **kwargs):
@@ -163,6 +163,7 @@ st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;"
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
