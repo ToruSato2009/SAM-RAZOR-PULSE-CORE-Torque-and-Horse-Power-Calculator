@@ -19,30 +19,41 @@ st.markdown("""
         transform: scale(1.05);
         box-shadow: 0 0 10px #ff4b4b;
     }
-    h1, h2, h3 {
+    h1, h2 {
         color: #ff4b4b;
-        text-shadow: 0 0 10px #ff4b4b, 0 0 20px #ff4b4b;
+        text-shadow: 0 0 10px #ff4b4b;
         font-family: 'Agency FB', sans-serif;
+        font-weight: bold;
     }
     .stApp {
+        font-family: 'Agency FB', sans-serif;
+        font-weight: bold;
         color: #e0e0e0;
         text-shadow: 0 0 5px #ffffff;
-        font-family: 'Agency FB', sans-serif;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #1c1c1c;
-        font-family: 'Agency FB', sans-serif;
-        color: #ff4b4b;
-    }
-    [data-testid="stSidebar"] * {
-        font-family: 'Agency FB', sans-serif;
-        color: #ff4b4b;
     }
     label, .markdown-text-container {
         font-family: 'Agency FB', sans-serif;
+        font-weight: bold;
         color: #e0e0e0;
     }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 0;
+    }
+    .hud-container {
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        border-radius: 12px;
+        z-index: 1;
+        position: relative;
+    }
     </style>
+    <div class="overlay"></div>
 """, unsafe_allow_html=True)
 
 # 🔧 Set background image
@@ -66,19 +77,19 @@ def set_background(image_file):
 
 set_background("m3_back.jpg")
 
-# 🎨 Font-controlled input label helper
+# 🎨 Styled input
 def styled_input(label_text, key, **kwargs):
-    st.markdown(f'<label style="font-family:Agency FB; color:#ff4b4b;">{label_text}</label>', unsafe_allow_html=True)
+    st.markdown(f'<label style="color:#ff4b4b; font-family:Agency FB; font-weight:bold;">{label_text}</label>', unsafe_allow_html=True)
     return st.number_input("", key=key, **kwargs)
 
 # 🎬 Title
-st.markdown('<h1 style="font-family:Agency FB; color:#ff4b4b;">🔧 SAM RAZOR PULSE CORE Torque Simulator</h1>', unsafe_allow_html=True)
+st.markdown('<h1>🔧 SAM RAZOR PULSE CORE Torque Simulator</h1>', unsafe_allow_html=True)
 
-# 🎮 Engine Type Selection
-st.markdown('<label style="font-family:Agency FB; color:#ff4b4b;">Choose Engine Type:</label>', unsafe_allow_html=True)
+# 🎮 Engine Type
+st.markdown('<label style="color:#ff4b4b; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
 engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)"], key="engine_type")
 
-# 🔍 Force Input (per piston only)
+# 🔍 Force Input
 if engine_type == "ICE (Combustion)":
     bore_mm = styled_input("Enter piston bore (in mm)", key="bore_mm", min_value=0.0)
     pressure_mpa = styled_input("Enter peak cylinder pressure (in MPa)", key="pressure_mpa", min_value=0.0)
@@ -97,13 +108,13 @@ firing_pistons = styled_input("Number of pistons firing at once", key="firing_pi
 crank_radius = styled_input("Crank radius (in meters)", key="crank_radius", min_value=0.0)
 rpm = styled_input("Engine RPM", key="rpm", min_value=0, step=100)
 
-# ⚙️ Gear Ratios Input
+# ⚙️ Gear Ratios
 num_gears = styled_input("Number of gears", key="num_gears", min_value=1, step=1)
 gear_ratios = {}
 for i in range(1, int(num_gears) + 1):
     gear_ratios[f"Gear {i}"] = styled_input(f"Gear {i} ratio", key=f"gear_{i}", min_value=0.1)
 
-# 🔁 Final Drive Ratio
+# 🔁 Final Drive
 final_drive_ratio = styled_input("Final drive ratio", key="final_drive_ratio", min_value=0.1)
 
 # 🛞 Tire Specs
@@ -131,24 +142,26 @@ tire_circumference = math.pi * tire_diameter_m
 speed_mps = (wheel_rpm * tire_circumference) / 60
 speed_kph = speed_mps * 3.6
 
-# 🎬 Output Display
-st.markdown('<h2 style="font-family:Agency FB; color:#ff4b4b;">🧩 Engine Configuration</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
+# 🎬 HUD Output
+st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; color:#ff4b4b;">🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
+st.markdown('<h2>🧩 Engine Configuration</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; color:#ff4b4b;">⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
+st.markdown('<h2>🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
+
+st.markdown('<h2>⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
 for gear, values in gearbox_output.items():
-    st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="font-weight:bold;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
 
-st.markdown('<h2 style="font-family:Agency FB; color:#ff4b4b;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
+st.markdown('<h2>🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-weight:bold;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
-
+st.markdown('</div>', unsafe_allow_html=True)
