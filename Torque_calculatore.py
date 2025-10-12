@@ -164,7 +164,7 @@ gear_1_ratio = list(gear_ratios.values())[0]
 wheel_rpm = rpm / (gear_1_ratio * final_drive_ratio)
 tire_circumference = math.pi * tire_diameter_m
 speed_mps = (wheel_rpm * tire_circumference) / 60
-speed_kph = speed_mps * 
+speed_kph = speed_mps * 3.6
 # 🎬 HUD Output
 st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
@@ -188,6 +188,7 @@ st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;"
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
