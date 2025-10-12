@@ -92,6 +92,13 @@ def styled_input(label_text, key, **kwargs):
 # 🎬 Title
 st.markdown('<h1>🔧 SAM RAZOR PULSE CORE Torque Simulator</h1>', unsafe_allow_html=True)
 
+# 🔍 Force Calculation Function
+def calculate_solenoid_force(turns, current, core_area_m2, air_gap_m):
+    mu_0 = 4 * math.pi * 1e-7
+    B = (mu_0 * turns * current) / air_gap_m
+    force = (B**2 * core_area_m2) / (2 * mu_0)
+    return force
+
 # 🎮 Engine Type
 st.markdown('<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
 engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)"], key="engine_type")
@@ -105,9 +112,19 @@ if engine_type == "ICE (Combustion)":
     pressure_pa = pressure_mpa * 1_000_000
     force_per_piston = pressure_pa * area
 else:
-    solenoid_force = styled_input("Enter solenoid force (in Newtons)", key="solenoid_force", min_value=0.0)
+    turns = styled_input("Solenoid Turns", key="turns", min_value=1)
+    current = styled_input("Current (A)", key="current", min_value=0.1)
+    core_area_cm2 = styled_input("Core Area (cm²)", key="core_area", min_value=0.01)
+    air_gap_mm = styled_input("Air Gap (mm)", key="air_gap", min_value=0.01)
     efficiency = st.slider("Enter efficiency factor", 0.0, 1.0, 0.85, key="efficiency")
-    force_per_piston = solenoid_force * efficiency
+
+    core_area_m2 = core_area_cm2 / 10000
+    air_gap_m = air_gap_mm / 1000
+    raw_force = calculate_solenoid_force(turns, current, core_area_m2, air_gap_m)
+    force_per_piston = raw_force * efficiency
+
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Calculated Solenoid Force (before efficiency): {raw_force:.2f} N</p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Effective Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
 
 # 🧩 Engine Geometry
 total_pistons = styled_input("Total number of pistons", key="total_pistons", min_value=1, step=1)
@@ -147,8 +164,7 @@ gear_1_ratio = list(gear_ratios.values())[0]
 wheel_rpm = rpm / (gear_1_ratio * final_drive_ratio)
 tire_circumference = math.pi * tire_diameter_m
 speed_mps = (wheel_rpm * tire_circumference) / 60
-speed_kph = speed_mps * 3.6
-
+speed_kph = speed_mps * 
 # 🎬 HUD Output
 st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
@@ -172,6 +188,7 @@ st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;"
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
