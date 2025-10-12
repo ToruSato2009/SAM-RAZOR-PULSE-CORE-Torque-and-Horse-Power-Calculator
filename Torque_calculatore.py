@@ -143,23 +143,25 @@ speed_kph = speed_mps * 3.6
 # 🎬 HUD Output
 st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
-st.markdown('<h2>🧩 Engine Configuration</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">🧩 Engine Configuration</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
 
-st.markdown('<h2>🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
 
-st.markdown('<h2>⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
 for gear, values in gearbox_output.items():
-    st.markdown(f'<p style="font-weight:bold;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
 
-st.markdown('<h2>🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-weight:bold;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
+st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ff4b4b;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
+st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#e0e0e0;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
+
