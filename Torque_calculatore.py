@@ -64,7 +64,7 @@ def set_background(image_file):
         unsafe_allow_html=True
     )
 
-set_background("C:/Users/sekhar saha/Documents/m3_back.jpg")
+set_background("m3_back.jpg")
 
 # 🎨 Font-controlled input label helper
 def styled_input(label_text, key, **kwargs):
@@ -151,3 +151,4 @@ st.markdown('<h2 style="font-family:Agency FB; color:#ff4b4b;">🏎️ Estimated
 st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; color:#e0e0e0;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
+
