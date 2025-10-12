@@ -21,7 +21,6 @@ st.markdown("""
     }
     h1, h2 {
         color: #ff4b4b;
-        text-shadow: 0 0 10px #ff4b4b;
         font-family: 'Agency FB', sans-serif;
         font-weight: bold;
     }
@@ -29,7 +28,6 @@ st.markdown("""
         font-family: 'Agency FB', sans-serif;
         font-weight: bold;
         color: #e0e0e0;
-        text-shadow: 0 0 5px #ffffff;
     }
     label, .markdown-text-container {
         font-family: 'Agency FB', sans-serif;
