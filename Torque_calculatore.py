@@ -116,17 +116,24 @@ else:
     current = styled_input("Current (A)", key="current", min_value=0.1)
     diameter_mm = styled_input("Solenoid Core Diameter (mm)", key="diameter_mm", min_value=0.1)
     air_gap_mm = styled_input("Air Gap (mm)", key="air_gap", min_value=0.01)
+    wire_area_mm2 = styled_input("Wire Cross-Sectional Area (mm²)", key="wire_area", min_value=0.01)
     efficiency = st.slider("Enter efficiency factor", 0.0, 1.0, 0.85, key="efficiency")
 
+    # Convert diameter to radius and calculate core area
     radius_m = (diameter_mm / 1000) / 2
     core_area_m2 = math.pi * radius_m**2
     air_gap_m = air_gap_mm / 1000
+
+    # Optional: convert wire area to m² for future upgrades
+    wire_area_m2 = wire_area_mm2 / 1_000_000
 
     raw_force = calculate_solenoid_force(turns, current, core_area_m2, air_gap_m)
     force_per_piston = raw_force * efficiency
 
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Calculated Solenoid Force (before efficiency): {raw_force:.2f} N</p>', unsafe_allow_html=True)
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Effective Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wire Area Entered: {wire_area_mm2:.2f} mm²</p>', unsafe_allow_html=True)
+
 
 
 # 🧩 Engine Geometry
@@ -191,6 +198,7 @@ st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;"
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
