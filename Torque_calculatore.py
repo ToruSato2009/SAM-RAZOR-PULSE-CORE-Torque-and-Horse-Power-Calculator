@@ -103,6 +103,10 @@ def calculate_solenoid_force(turns, current, core_area_m2, air_gap_m):
 st.markdown('<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
 engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)"], key="engine_type")
 
+# 🔩 Stroke Length Input
+stroke_length_mm = styled_input("Enter cylinder/solenoid length (in mm)", key="stroke_length_mm", min_value=1.0)
+stroke_length_m = stroke_length_mm / 1000
+
 # 🔍 Force Input
 if engine_type == "ICE (Combustion)":
     bore_mm = styled_input("Enter piston bore (in mm)", key="bore_mm", min_value=0.0)
@@ -111,6 +115,8 @@ if engine_type == "ICE (Combustion)":
     area = math.pi * radius_m**2
     pressure_pa = pressure_mpa * 1_000_000
     force_per_piston = pressure_pa * area
+    displacement_per_cylinder = area * stroke_length_m
+    total_displacement = displacement_per_cylinder
 else:
     turns = styled_input("Solenoid Turns", key="turns", min_value=1)
     current = styled_input("Current (A)", key="current", min_value=0.1)
@@ -119,22 +125,17 @@ else:
     wire_area_mm2 = styled_input("Wire Cross-Sectional Area (mm²)", key="wire_area", min_value=0.01)
     efficiency = st.slider("Enter efficiency factor", 0.0, 1.0, 0.85, key="efficiency")
 
-    # Convert diameter to radius and calculate core area
     radius_m = (diameter_mm / 1000) / 2
     core_area_m2 = math.pi * radius_m**2
     air_gap_m = air_gap_mm / 1000
-
-    # Optional: convert wire area to m² for future upgrades
     wire_area_m2 = wire_area_mm2 / 1_000_000
 
     raw_force = calculate_solenoid_force(turns, current, core_area_m2, air_gap_m)
-    force_per_piston = raw_force * efficiency
+    force_per_piston = raw_force * efficiency * stroke_length_m * 20  # Tunable multiplier
 
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Calculated Solenoid Force (before efficiency): {raw_force:.2f} N</p>', unsafe_allow_html=True)
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Effective Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wire Area Entered: {wire_area_mm2:.2f} mm²</p>', unsafe_allow_html=True)
-
-
 
 # 🧩 Engine Geometry
 total_pistons = styled_input("Total number of pistons", key="total_pistons", min_value=1, step=1)
@@ -174,7 +175,7 @@ gear_1_ratio = list(gear_ratios.values())[0]
 wheel_rpm = rpm / (gear_1_ratio * final_drive_ratio)
 tire_circumference = math.pi * tire_diameter_m
 speed_mps = (wheel_rpm * tire_circumference) / 60
-speed_kph = speed_mps * 3.6
+speed_kph = speed_mps * 
 # 🎬 HUD Output
 st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
@@ -198,6 +199,7 @@ st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;"
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
