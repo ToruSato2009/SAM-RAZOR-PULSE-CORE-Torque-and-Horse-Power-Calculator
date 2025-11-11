@@ -1,3 +1,4 @@
+import streamlit as st
 # [Your original imports and styling remain unchanged]
 
 # 🎮 Engine Type
@@ -136,3 +137,4 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
