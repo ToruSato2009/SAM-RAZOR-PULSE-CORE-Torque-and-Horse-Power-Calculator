@@ -16,7 +16,7 @@ def calculate_solenoid_force(turns, current, core_area_m2, air_gap_m):
 
 # 🎮 Engine Type
 st.markdown('<p style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</p>', unsafe_allow_html=True)
-engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)", "Radial Aircraft (Aspirated)"], key="engine_type")
+engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)"], key="engine_type")
 
 # 🔩 Stroke Length Input
 stroke_length_mm = styled_input("Enter cylinder/solenoid length (in mm)", key="stroke_length_mm", min_value=1.0)
@@ -119,6 +119,7 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p>Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
