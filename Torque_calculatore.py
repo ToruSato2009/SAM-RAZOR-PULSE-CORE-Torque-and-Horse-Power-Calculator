@@ -13,20 +13,6 @@ def calculate_solenoid_force(turns, current, core_area_m2, air_gap_m):
     force = (B**2 * core_area_m2) / (2 * mu_0)
     return force
 
-# ✈️ Radial Aircraft HP Calculator
-def calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa=0):
-    bore_m = bore_mm / 1000
-    stroke_m = stroke_mm / 1000
-    area = math.pi * (bore_m / 2)**2
-    displacement_per_cylinder = area * stroke_m
-    total_displacement = displacement_per_cylinder * cylinders
-    intake_pressure_pa = (1 + boost_pressure_mpa) * 101325
-    mass_airflow = total_displacement * rpm * ve * intake_pressure_pa / (60 * 287.05 * 300)
-    fuel_mass_flow = mass_airflow / afr
-    energy_per_kg_fuel = 44e6
-    power_watts = fuel_mass_flow * energy_per_kg_fuel * 0.3
-    power_hp = power_watts / 745.7
-    return power_hp
 
 # 🎮 Engine Type
 st.markdown('<p style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</p>', unsafe_allow_html=True)
@@ -133,6 +119,7 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p>Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
 
