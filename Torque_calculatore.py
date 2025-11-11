@@ -70,36 +70,7 @@ elif engine_type == "Pulse Core (Electric Solenoid)":
     engine_torque = total_engine_force * stroke_length_m
     engine_hp = (engine_torque * rpm) / 5252
 
-elif engine_type == "Radial Aircraft (Aspirated)":
-    # 🔩 Inputs
-    bore_mm = styled_input("Cylinder Bore (mm)", key="radial_bore", min_value=0.0)
-    stroke_mm = styled_input("Stroke Length (mm)", key="radial_stroke", min_value=0.0)
-    compression_ratio = styled_input("Compression Ratio", key="radial_compression", min_value=1.0)
-    afr = styled_input("Air-Fuel Ratio", key="radial_afr", min_value=1.0)
-    ve = st.slider("Volumetric Efficiency", 0.0, 1.0, 0.85, key="radial_ve")
-    boost_pressure_mpa = styled_input("Boost Pressure (MPa)", key="radial_boost", min_value=0.0)
-    cylinders = styled_input("Number of Cylinders", key="radial_cylinders", min_value=1, step=1)
-    
-    # ✅ Unique RPM input for Radial
-    rpm_radial = styled_input("Engine RPM", key="rpm_radial_unique", min_value=0, step=100)
 
-    # ✅ Calculate HP
-    engine_hp = calculate_radial_hp(
-        bore_mm, stroke_mm, compression_ratio, afr, ve, rpm_radial, cylinders, boost_pressure_mpa
-    )
-
-    # ✅ Safe torque calculation
-    if rpm_radial > 0:
-        engine_torque = (engine_hp * 5252) / rpm_radial
-    else:
-        engine_torque = 0
-
-    # ✅ Set placeholders for consistency
-    force_per_piston = 0
-    total_engine_force = 0
-
-    # ✅ Unify RPM for HUD display
-    rpm = rpm_radial
 
 
 # 🧩 Gearbox Inputs
@@ -162,5 +133,6 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p>Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
