@@ -27,11 +27,20 @@ def calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cyl
     power_watts = fuel_mass_flow * energy_per_kg_fuel * 0.3
     power_hp = power_watts / 745.7
     return power_hp
+
+# 🎮 Engine Type
 st.markdown('<p style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</p>', unsafe_allow_html=True)
 engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)", "Radial Aircraft (Aspirated)"], key="engine_type")
+
+# 🔩 Stroke Length Input
 stroke_length_mm = styled_input("Enter cylinder/solenoid length (in mm)", key="stroke_length_mm", min_value=1.0)
 stroke_length_m = stroke_length_mm / 1000
-rpm = styled_input("Engine RPM", key="rpm", min_value=0, step=100)
+
+# 🧩 RPM Input (unique per engine type)
+rpm_key = "rpm_ice" if engine_type == "ICE (Combustion)" else "rpm_solenoid" if engine_type == "Pulse Core (Electric Solenoid)" else "rpm_radial"
+rpm = styled_input("Engine RPM", key=rpm_key, min_value=0, step=100)
+
+# 🔍 Engine Calculations
 if engine_type == "ICE (Combustion)":
     bore_mm = styled_input("Enter piston bore (in mm)", key="bore_mm", min_value=0.0)
     pressure_mpa = styled_input("Enter peak cylinder pressure (in MPa)", key="pressure_mpa", min_value=0.0)
@@ -69,31 +78,26 @@ elif engine_type == "Radial Aircraft (Aspirated)":
     ve = st.slider("Volumetric Efficiency", 0.0, 1.0, 0.85, key="ve")
     boost_pressure_mpa = styled_input("Boost Pressure (MPa)", key="boost_pressure", min_value=0.0)
     cylinders = styled_input("Number of Cylinders", key="radial_cylinders", min_value=1, step=1)
-    rpm = styled_input("Engine RPM", key="rpm", min_value=0, step=100)
 
-    # ✅ Calculate HP first
-    engine_hp = calculate_radial_hp(
-        bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa
-    )
-
-    # ✅ Then calculate torque
+    engine_hp = calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa)
     engine_torque = (engine_hp * 5252) / rpm
-
-    # ✅ Set placeholders for consistency
     force_per_piston = 0
     total_engine_force = 0
 
+# 🧩 Gearbox Inputs
 total_pistons = styled_input("Total number of pistons", key="total_pistons", min_value=1, step=1)
 firing_pistons = styled_input("Number of pistons firing at once", key="firing_pistons", min_value=1, step=1)
 crank_radius = styled_input("Crank radius (in meters)", key="crank_radius", min_value=0.0)
-
 num_gears = styled_input("Number of gears", key="num_gears", min_value=1, step=1)
+
 gear_ratios = {}
 for i in range(1, int(num_gears) + 1):
     gear_ratios[f"Gear {i}"] = styled_input(f"Gear {i} ratio", key=f"gear_{i}", min_value=0.1)
 
 final_drive_ratio = styled_input("Final drive ratio", key="final_drive_ratio", min_value=0.1)
 tire_diameter_m = styled_input("Tire diameter (in meters)", key="tire_diameter", min_value=0.1)
+
+# ⚙️ Gearbox Output
 gearbox_output = {}
 for gear, ratio in gear_ratios.items():
     gearbox_torque = engine_torque * ratio
@@ -103,6 +107,7 @@ for gear, ratio in gear_ratios.items():
         "wheel_torque": wheel_torque
     }
 
+# 🚀 Speed Output
 gear_1_ratio = list(gear_ratios.values())[0]
 wheel_rpm = rpm / (gear_1_ratio * final_drive_ratio)
 tire_circumference = math.pi * tire_diameter_m
@@ -113,30 +118,29 @@ st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
 # 🧩 Engine Configuration
 st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🧩 Engine Configuration</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p>Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
+st.markdown(f'<p>Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
 
 if engine_type != "Radial Aircraft (Aspirated)":
-    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
-    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
+    st.markdown(f'<p>Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
+    st.markdown(f'<p>Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
 
 # 🔧 Torque & Horsepower
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Horsepower @ {rpm} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
+st.markdown('<h2>🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
+st.markdown(f'<p>Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
+st.markdown(f'<p>Horsepower @ {rpm:.2f} RPM: {engine_hp:.2f} HP</p>', unsafe_allow_html=True)
 
 # ⚙️ Gearbox & Wheel Torque
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
+st.markdown('<h2>⚙️ Gearbox & Wheel Torque</h2>', unsafe_allow_html=True)
 for gear, values in gearbox_output.items():
-    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
+    st.markdown(f'<p>{gear}: Gearbox Torque = {values["gearbox_torque"]:.2f} Nm | Wheel Torque = {values["wheel_torque"]:.2f} Nm</p>', unsafe_allow_html=True)
 
 # 🏎️ Speed Output
-st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
+st.markdown('<h2>🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
+st.markdown(f'<p>Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
+st.markdown(f'<p>Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
 
 if engine_type != "Radial Aircraft (Aspirated)":
-    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
+    st.markdown(f'<p>Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-
