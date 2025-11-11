@@ -71,16 +71,17 @@ elif engine_type == "Pulse Core (Electric Solenoid)":
     engine_hp = (engine_torque * rpm) / 5252
 
 elif engine_type == "Radial Aircraft (Aspirated)":
+    # 🔩 Inputs
     bore_mm = styled_input("Cylinder Bore (mm)", key="radial_bore", min_value=0.0)
     stroke_mm = styled_input("Stroke Length (mm)", key="radial_stroke", min_value=0.0)
-    compression_ratio = styled_input("Compression Ratio", key="compression_ratio", min_value=1.0)
-    afr = styled_input("Air-Fuel Ratio", key="afr", min_value=1.0)
-    ve = st.slider("Volumetric Efficiency", 0.0, 1.0, 0.85, key="ve")
-    boost_pressure_mpa = styled_input("Boost Pressure (MPa)", key="boost_pressure", min_value=0.0)
+    compression_ratio = styled_input("Compression Ratio", key="radial_compression", min_value=1.0)
+    afr = styled_input("Air-Fuel Ratio", key="radial_afr", min_value=1.0)
+    ve = st.slider("Volumetric Efficiency", 0.0, 1.0, 0.85, key="radial_ve")
+    boost_pressure_mpa = styled_input("Boost Pressure (MPa)", key="radial_boost", min_value=0.0)
     cylinders = styled_input("Number of Cylinders", key="radial_cylinders", min_value=1, step=1)
-
-    # ✅ Use a unique key for radial RPM
-    rpm_radial = styled_input("Engine RPM", key="rpm_radial", min_value=0, step=100)
+    
+    # ✅ Unique RPM input for Radial
+    rpm_radial = styled_input("Engine RPM", key="rpm_radial_unique", min_value=0, step=100)
 
     # ✅ Calculate HP
     engine_hp = calculate_radial_hp(
@@ -161,4 +162,5 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p>Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
