@@ -66,7 +66,8 @@ elif engine_type == "Radial Aircraft (Aspirated)":
         power_watts = fuel_mass_flow * energy_per_kg_fuel * 0.3
         power_hp = power_watts / 745.7
         return power_hp
-
+# 🧩 Engine Geometry (move this up)
+rpm = styled_input("Engine RPM", key="rpm", min_value=0, step=100)
     engine_hp = calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa)
     force_per_piston = 0
     total_engine_force = 0
@@ -140,5 +141,6 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
 
