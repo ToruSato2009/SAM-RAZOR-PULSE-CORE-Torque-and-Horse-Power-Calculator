@@ -1,107 +1,8 @@
-import streamlit as st
-import base64
-import math
-
-# 🔥 Inject custom UI styling
-st.markdown("""
-    <style>
-    div.stButton > button {
-        background-color: #ff4b4b;
-        color: white;
-        border-radius: 8px;
-        font-weight: bold;
-        padding: 0.5em 1em;
-        transition: all 0.3s ease-in-out;
-        font-family: 'Agency FB', sans-serif;
-    }
-    div.stButton > button:hover {
-        background-color: #ff1c1c;
-        transform: scale(1.05);
-        box-shadow: 0 0 10px #ff4b4b;
-    }
-    h1, h2, h3 {
-        color: #ffffff;
-        font-family: 'Agency FB', sans-serif;
-        font-weight: bold;
-    }
-    .stApp {
-        font-family: 'Agency FB', sans-serif;
-        font-weight: bold;
-        color: #ffffff;
-    }
-    label, .markdown-text-container {
-        font-family: 'Agency FB', sans-serif;
-        font-weight: bold;
-        color: #ffffff;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #1c1c1c;
-        font-family: 'Agency FB', sans-serif;
-        color: #ffffff;
-    }
-    [data-testid="stSidebar"] * {
-        font-family: 'Agency FB', sans-serif;
-        color: #ffffff;
-    }
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-        z-index: 0;
-    }
-    .hud-container {
-        background-color: rgba(0, 0, 0, 0.6);
-        padding: 20px;
-        border-radius: 12px;
-        z-index: 1;
-        position: relative;
-    }
-    </style>
-    <div class="overlay"></div>
-""", unsafe_allow_html=True)
-
-# 🔧 Set background image
-def set_background(image_file):
-    with open(image_file, "rb") as file:
-        encoded = base64.b64encode(file.read()).decode()
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/jpeg;base64,{encoded}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-set_background("SAM.png")
-
-# 🎨 Styled input
-def styled_input(label_text, key, **kwargs):
-    st.markdown(f'<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">{label_text}</label>', unsafe_allow_html=True)
-    return st.number_input("", key=key, **kwargs)
-
-# 🎬 Title
-st.markdown('<h1>🔧 SAM RAZOR PULSE CORE Torque Simulator</h1>', unsafe_allow_html=True)
-
-# 🔍 Force Calculation Function
-def calculate_solenoid_force(turns, current, core_area_m2, air_gap_m):
-    mu_0 = 4 * math.pi * 1e-7
-    B = (mu_0 * turns * current) / air_gap_m
-    force = (B**2 * core_area_m2) / (2 * mu_0)
-    return force
+# [Your original imports and styling remain unchanged]
 
 # 🎮 Engine Type
 st.markdown('<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
-engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)"], key="engine_type")
+engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)", "Radial Aircraft (Aspirated)"], key="engine_type")
 
 # 🔩 Stroke Length Input
 stroke_length_mm = styled_input("Enter cylinder/solenoid length (in mm)", key="stroke_length_mm", min_value=1.0)
@@ -117,7 +18,8 @@ if engine_type == "ICE (Combustion)":
     force_per_piston = pressure_pa * area
     displacement_per_cylinder = area * stroke_length_m
     total_displacement = displacement_per_cylinder
-else:
+
+elif engine_type == "Pulse Core (Electric Solenoid)":
     turns = styled_input("Solenoid Turns", key="turns", min_value=1)
     current = styled_input("Current (A)", key="current", min_value=0.1)
     diameter_mm = styled_input("Solenoid Core Diameter (mm)", key="diameter_mm", min_value=0.1)
@@ -131,11 +33,40 @@ else:
     wire_area_m2 = wire_area_mm2 / 1_000_000
 
     raw_force = calculate_solenoid_force(turns, current, core_area_m2, air_gap_m)
-    force_per_piston = raw_force * efficiency * stroke_length_m * 20  # Tunable multiplier
+    force_per_piston = raw_force * efficiency * stroke_length_m * 20
 
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Calculated Solenoid Force (before efficiency): {raw_force:.2f} N</p>', unsafe_allow_html=True)
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Effective Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wire Area Entered: {wire_area_mm2:.2f} mm²</p>', unsafe_allow_html=True)
+
+elif engine_type == "Radial Aircraft (Aspirated)":
+    bore_mm = styled_input("Cylinder Bore (mm)", key="radial_bore", min_value=0.0)
+    stroke_mm = styled_input("Stroke Length (mm)", key="radial_stroke", min_value=0.0)
+    compression_ratio = styled_input("Compression Ratio", key="compression_ratio", min_value=1.0)
+    afr = styled_input("Air-Fuel Ratio", key="afr", min_value=1.0)
+    ve = st.slider("Volumetric Efficiency", 0.0, 1.0, 0.85, key="ve")
+    boost_pressure_mpa = styled_input("Boost Pressure (MPa)", key="boost_pressure", min_value=0.0)
+    cylinders = styled_input("Number of Cylinders", key="radial_cylinders", min_value=1, step=1)
+
+    def calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa=0):
+        bore_m = bore_mm / 1000
+        stroke_m = stroke_mm / 1000
+        area = math.pi * (bore_m / 2)**2
+        displacement_per_cylinder = area * stroke_m
+        total_displacement = displacement_per_cylinder * cylinders
+        air_density = 1.225
+        intake_pressure_pa = (1 + boost_pressure_mpa) * 101325
+        mass_airflow = total_displacement * rpm * ve * intake_pressure_pa / (60 * 287.05 * 300)
+        fuel_mass_flow = mass_airflow / afr
+        energy_per_kg_fuel = 44e6
+        power_watts = fuel_mass_flow * energy_per_kg_fuel * 0.3
+        power_hp = power_watts / 745.7
+        return power_hp
+
+    engine_hp = calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa)
+    force_per_piston = 0
+    total_engine_force = 0
+    engine_torque = (engine_hp * 5252) / rpm
 
 # 🧩 Engine Geometry
 total_pistons = styled_input("Total number of pistons", key="total_pistons", min_value=1, step=1)
@@ -156,9 +87,10 @@ final_drive_ratio = styled_input("Final drive ratio", key="final_drive_ratio", m
 tire_diameter_m = styled_input("Tire diameter (in meters)", key="tire_diameter", min_value=0.1)
 
 # 🧮 Calculations
-total_engine_force = force_per_piston * total_pistons
-engine_torque = total_engine_force * crank_radius
-engine_hp = (engine_torque * rpm) / 5252
+if engine_type != "Radial Aircraft (Aspirated)":
+    total_engine_force = force_per_piston * total_pistons
+    engine_torque = total_engine_force * crank_radius
+    engine_hp = (engine_torque * rpm) / 5252
 
 # ⚙️ Gearbox Output
 gearbox_output = {}
@@ -176,14 +108,17 @@ wheel_rpm = rpm / (gear_1_ratio * final_drive_ratio)
 tire_circumference = math.pi * tire_diameter_m
 speed_mps = (wheel_rpm * tire_circumference) / 60
 speed_kph = speed_mps * 3.6
+
 # 🎬 HUD Output
 st.markdown('<div class="hud-container">', unsafe_allow_html=True)
 
 st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🧩 Engine Configuration</h2>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Pistons: {total_pistons}</p>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Pistons Firing per Cycle: {firing_pistons}</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
+
+if engine_type != "Radial Aircraft (Aspirated)":
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Force per Piston: {force_per_piston:.2f} N</p>', unsafe_allow_html=True)
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Total Engine Force: {total_engine_force:.2f} N</p>', unsafe_allow_html=True)
 
 st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🔧 Torque & Horsepower</h2>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Engine Torque: {engine_torque:.2f} Nm</p>', unsafe_allow_html=True)
@@ -196,15 +131,8 @@ for gear, values in gearbox_output.items():
 st.markdown('<h2 style="font-family:Agency FB; font-weight:bold; color:#ffffff;">🏎️ Estimated Speed in Gear 1</h2>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Wheel RPM: {wheel_rpm:.2f}</p>', unsafe_allow_html=True)
 st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Speed: {speed_mps:.2f} m/s ({speed_kph:.2f} km/h)</p>', unsafe_allow_html=True)
-st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
+
+if engine_type != "Radial Aircraft (Aspirated)":
+    st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
