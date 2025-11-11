@@ -4,7 +4,10 @@ import streamlit as st
 # 🎮 Engine Type
 st.markdown('<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">Choose Engine Type:</label>', unsafe_allow_html=True)
 engine_type = st.radio("", ["ICE (Combustion)", "Pulse Core (Electric Solenoid)", "Radial Aircraft (Aspirated)"], key="engine_type")
-
+# ✅ Define styled_input BEFORE using it
+def styled_input(label_text, key, **kwargs):
+    st.markdown(f'<label style="color:#ffffff; font-family:Agency FB; font-weight:bold;">{label_text}</label>', unsafe_allow_html=True)
+    return st.number_input("", key=key, **kwargs)
 # 🔩 Stroke Length Input
 stroke_length_mm = styled_input("Enter cylinder/solenoid length (in mm)", key="stroke_length_mm", min_value=1.0)
 stroke_length_m = stroke_length_mm / 1000
@@ -137,4 +140,5 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p style="font-family:Agency FB; font-weight:bold; color:#ffffff;">Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
 
