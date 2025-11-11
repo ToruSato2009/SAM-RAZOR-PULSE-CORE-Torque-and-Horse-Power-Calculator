@@ -79,10 +79,27 @@ elif engine_type == "Radial Aircraft (Aspirated)":
     boost_pressure_mpa = styled_input("Boost Pressure (MPa)", key="boost_pressure", min_value=0.0)
     cylinders = styled_input("Number of Cylinders", key="radial_cylinders", min_value=1, step=1)
 
-    engine_hp = calculate_radial_hp(bore_mm, stroke_mm, compression_ratio, afr, ve, rpm, cylinders, boost_pressure_mpa)
-    engine_torque = (engine_hp * 5252) / rpm
+    # ✅ Use a unique key for radial RPM
+    rpm_radial = styled_input("Engine RPM", key="rpm_radial", min_value=0, step=100)
+
+    # ✅ Calculate HP
+    engine_hp = calculate_radial_hp(
+        bore_mm, stroke_mm, compression_ratio, afr, ve, rpm_radial, cylinders, boost_pressure_mpa
+    )
+
+    # ✅ Safe torque calculation
+    if rpm_radial > 0:
+        engine_torque = (engine_hp * 5252) / rpm_radial
+    else:
+        engine_torque = 0
+
+    # ✅ Set placeholders for consistency
     force_per_piston = 0
     total_engine_force = 0
+
+    # ✅ Unify RPM for HUD display
+    rpm = rpm_radial
+
 
 # 🧩 Gearbox Inputs
 total_pistons = styled_input("Total number of pistons", key="total_pistons", min_value=1, step=1)
@@ -144,3 +161,4 @@ if engine_type != "Radial Aircraft (Aspirated)":
     st.markdown(f'<p>Powered by Total Engine Force: {total_engine_force:.2f} N from {total_pistons} pistons</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+
